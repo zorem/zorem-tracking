@@ -141,7 +141,6 @@ class WC_Trackers {
 	public function set_unset_usage_data_cron() {
 		$ast_enable_usage_data = get_option( $this->plugin_slug_with_hyphens . '_enable_usage_data', 0 );
 		$ast_optin_email_notification = get_option( $this->plugin_slug_with_hyphens . '_optin_email_notification', 0 );
-
 		if ( 0 == $ast_enable_usage_data && 0 == $ast_optin_email_notification ) {
 			wp_clear_scheduled_hook( 'zorem_usage_data_' . $this->plugin_slug_with_hyphens );
 		} else if ( ! wp_next_scheduled ( 'zorem_usage_data_' . $this->plugin_slug_with_hyphens ) ) {
@@ -230,6 +229,10 @@ class WC_Trackers {
 			$data['country'] = WC()->countries->get_base_country();
 
 			$data['get_order_value'] = $this->get_order_value();
+			
+			$data['order_value_three_month'] = $this->get_order_value_three_month();
+
+			$data['order_counts_three_month'] = $this->get_order_counts_three_month();
 			
 		}
 
@@ -446,10 +449,77 @@ class WC_Trackers {
 			$firstDateObj = new DateTime($first);
 			$interval = $today->diff($firstDateObj);
 			$months = $interval->format('%m');
-			// Perform actions if $first is greater than $firstDate
-			$monthly_average = round( $total_orders / $months, 2 );
+			$days = $interval->days;
+			// Check if $months is zero before division
+			if ($months > 0) {
+				$monthly_average = round( $total_orders / $months, 2 );
+			} else {
+				$monthly_average = $days !== '0' ? round( $total_orders / $days, 2 ) : 0; // Set a default value or handle this case accordingly
+			}
 		} else {
 			$monthly_average = round( $total_orders / 12, 2 );
+		}
+		
+	
+		return $monthly_average;
+	}
+	/**
+	 * Get a list Three Month average order count
+	 *
+	 * @return array
+	 */
+	public function get_order_counts_three_month() {
+		global $wpdb;
+		$min_max = $wpdb->get_row(
+			"
+			SELECT
+				MIN( date_created_gmt ) as 'first', MAX( date_created_gmt ) as 'last' 
+			FROM {$wpdb->prefix}wc_order_stats
+		",
+			ARRAY_A
+		);
+		if ( is_null( $min_max ) ) {
+			$min_max = array(
+				'first' => '-',
+				'last'  => '-',
+			);
+		}else {
+			$first = $min_max['first'];
+			$last = $min_max['last'];
+		}
+		$firstDate = strtotime('-3 months');
+		$current_date = date('Y-m-d');
+		$last_12_months_start_date = date('Y-m-d', strtotime('-12 months', strtotime($current_date)));
+		$orderStatuses = array('wc-completed', 'wc-processing');
+		$countQuery = $wpdb->get_var(
+			$wpdb->prepare(
+				"
+				SELECT COUNT(*) 
+				FROM {$wpdb->prefix}wc_order_stats 
+				WHERE date_created_gmt >= %s 
+				AND date_created_gmt <= %s
+				AND status IN ('" . implode("','", $orderStatuses) . "')
+				",
+				$first,
+				$last
+			)
+		);
+	
+		$total_orders = $countQuery;
+	
+		if (strtotime($first) > $firstDate) {
+			$today = new DateTime();
+			$firstDateObj = new DateTime($first);
+			$interval = $today->diff($firstDateObj);
+			$months = $interval->format('%m');
+			$days = $interval->days;
+			if ($months > 0) {
+				$monthly_average = round( $total_orders / $months, 2 );
+			} else {
+				$monthly_average = $days !== '0' ? round( $total_orders / $days, 2 ) : 0;
+			}
+		} else {
+			$monthly_average = round( $total_orders / 3, 2 );
 		} 
 		
 	
@@ -503,10 +573,79 @@ class WC_Trackers {
 			$firstDateObj = new DateTime($first);
 			$interval = $today->diff($firstDateObj);
 			$months = $interval->format('%m');
-			$monthly_average = $net_total / $months;
+			$days = $interval->days;
+			if ($months > 0) {
+				$monthly_average = $net_total / $months;
+			}
+			else {
+				$monthly_average = $days !== '0' ? round( $net_total / $days, 2 ) : 0;
+			}
+			
 		} else {
 			// Calculate monthly average based on the last 12 months
 			$monthly_average = $net_total / 12;
+		}
+		
+		return $monthly_average;
+		
+	}
+	/**
+	 * Get a list one year average order value count
+	 *
+	 * @return array
+	 */
+	public function get_order_value_three_month() {
+		global $wpdb;
+		$min_max = $wpdb->get_row(
+			"
+			SELECT
+				MIN(date_created_gmt) as 'first', MAX(date_created_gmt) as 'last' 
+			FROM {$wpdb->prefix}wc_order_stats
+			",
+			ARRAY_A
+		);
+		
+		if (is_null($min_max)) {
+			$min_max = array(
+				'first' => '-',
+				'last'  => '-',
+			);
+		} else {
+			$first = $min_max['first'];
+			$last = $min_max['last'];
+		}
+		
+		$orderStatuses = array('wc-completed', 'wc-processing');
+		$net_total = $wpdb->get_var(
+			$wpdb->prepare(
+				"
+				SELECT SUM(net_total) 
+				FROM {$wpdb->prefix}wc_order_stats 
+				WHERE date_created_gmt >= %s 
+				AND date_created_gmt <= %s
+				AND status IN ('" . implode("','", $orderStatuses) . "')
+				",
+				$first,
+				$last
+			)
+		);
+		$firstDate = strtotime('-3 months');
+		if (strtotime($first) > $firstDate) {
+			// Calculate monthly average based on $month_count
+			$today = new DateTime();
+			$firstDateObj = new DateTime($first);
+			$interval = $today->diff($firstDateObj);
+			$months = $interval->format('%m');
+			$days = $interval->days;
+			if ($months > 0) {
+				$monthly_average = $net_total / $months;
+			}
+			else {
+				$monthly_average = $days !== '0' ? round( $net_total / $days, 2 ) : 0;
+			}
+		} else {
+			// Calculate monthly average based on the last 12 months
+			$monthly_average = $net_total / 3;
 		}
 		
 		return $monthly_average;
