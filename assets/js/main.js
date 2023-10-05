@@ -11,7 +11,7 @@ jQuery( ".ud-checkbox li" ).on("click", function (e) {
 });
 
 jQuery(document).on("click", ".submit_usage_data", function(e){	
-	alert("hello");
+	
 	var form = jQuery('#usage_data_form');
 	jQuery(".ud-box-container").block({
 		message: null,
