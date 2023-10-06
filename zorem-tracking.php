@@ -74,8 +74,8 @@ class WC_Trackers {
 	}
 	public function enqueue_plugin_styles() {
 		// Enqueue your CSS file
-		wp_enqueue_style('plugin-css', plugin_dir_url(__FILE__) . 'assets/css/style.css', array(), '1.0.0');
-		wp_enqueue_script('plugin-js', plugin_dir_url(__FILE__) . 'assets/js/main.js', array(), '1.0.0');
+		wp_enqueue_style('plugin-css', plugin_dir_url(__FILE__) . 'assets/css/style.css', array(), time());
+		wp_enqueue_script('plugin-js', plugin_dir_url(__FILE__) . 'assets/js/main.js', array(), time());
 		 
 		wp_localize_script('plugin-js', 'zorem_tracking_data', [
 			'plugin_slug_with_hyphens' => $this->plugin_slug_with_hyphens,
