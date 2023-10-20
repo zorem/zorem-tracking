@@ -427,7 +427,7 @@ if ( !class_exists( 'WC_Trackers' ) ) {
 			$firstDate = strtotime('-12 months');
 			$current_date = date('Y-m-d');
 			$last_12_months_start_date = date('Y-m-d', strtotime('-12 months', strtotime($current_date)));
-			$orderStatuses = array('wc-completed', 'wc-processing');
+			$orderStatuses = array('wc-trash','wc-pending','wc-failed','wc-cancelled','wc-on-hold','wc-refund-requested');
 			$countQuery = $wpdb->get_var(
 				$wpdb->prepare(
 					"
@@ -435,7 +435,7 @@ if ( !class_exists( 'WC_Trackers' ) ) {
 					FROM {$wpdb->prefix}wc_order_stats 
 					WHERE date_created_gmt >= %s 
 					AND date_created_gmt <= %s
-					AND status IN ('" . implode("','", $orderStatuses) . "')
+					AND status NOT IN ('" . implode("','", $orderStatuses) . "')
 					",
 					$first,
 					$last
@@ -490,7 +490,7 @@ if ( !class_exists( 'WC_Trackers' ) ) {
 			$firstDate = strtotime('-3 months');
 			$current_date = date('Y-m-d');
 			$last_12_months_start_date = date('Y-m-d', strtotime('-12 months', strtotime($current_date)));
-			$orderStatuses = array('wc-completed', 'wc-processing');
+			$orderStatuses = array('wc-trash','wc-pending','wc-failed','wc-cancelled','wc-on-hold','wc-refund-requested');
 			$countQuery = $wpdb->get_var(
 				$wpdb->prepare(
 					"
@@ -498,7 +498,7 @@ if ( !class_exists( 'WC_Trackers' ) ) {
 					FROM {$wpdb->prefix}wc_order_stats 
 					WHERE date_created_gmt >= %s 
 					AND date_created_gmt <= %s
-					AND status IN ('" . implode("','", $orderStatuses) . "')
+					AND status NOT IN ('" . implode("','", $orderStatuses) . "')
 					",
 					$first,
 					$last
@@ -552,7 +552,7 @@ if ( !class_exists( 'WC_Trackers' ) ) {
 				$last = $min_max['last'];
 			}
 			
-			$orderStatuses = array('wc-completed', 'wc-processing');
+			$orderStatuses = array('wc-trash','wc-pending','wc-failed','wc-cancelled','wc-on-hold','wc-refund-requested');
 			$net_total = $wpdb->get_var(
 				$wpdb->prepare(
 					"
@@ -560,7 +560,7 @@ if ( !class_exists( 'WC_Trackers' ) ) {
 					FROM {$wpdb->prefix}wc_order_stats 
 					WHERE date_created_gmt >= %s 
 					AND date_created_gmt <= %s
-					AND status IN ('" . implode("','", $orderStatuses) . "')
+					AND status NOT IN ('" . implode("','", $orderStatuses) . "')
 					",
 					$first,
 					$last
@@ -615,7 +615,7 @@ if ( !class_exists( 'WC_Trackers' ) ) {
 				$last = $min_max['last'];
 			}
 			
-			$orderStatuses = array('wc-completed', 'wc-processing');
+			$orderStatuses = array('wc-trash','wc-pending','wc-failed','wc-cancelled','wc-on-hold','wc-refund-requested');
 			$net_total = $wpdb->get_var(
 				$wpdb->prepare(
 					"
@@ -623,7 +623,7 @@ if ( !class_exists( 'WC_Trackers' ) ) {
 					FROM {$wpdb->prefix}wc_order_stats 
 					WHERE date_created_gmt >= %s 
 					AND date_created_gmt <= %s
-					AND status IN ('" . implode("','", $orderStatuses) . "')
+					AND status NOT IN ('" . implode("','", $orderStatuses) . "')
 					",
 					$first,
 					$last
