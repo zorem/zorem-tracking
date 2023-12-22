@@ -235,6 +235,12 @@ if ( !class_exists( 'WC_Trackers' ) ) {
 				$data['country'] = WC()->countries->get_base_country();
 
 				$data['order'] = $this->get_order_revenue();
+				// $data['net_revenue_twelve'] = $order_revenue_data['net_revenue_twelve'];
+				// $data['orders_count_twelve'] = $order_revenue_data['orders_count_twelve'];
+				// $data['avg_order_value_twelve'] = $order_revenue_data['avg_order_value_twelve'];
+				// $data['avg_order_value_three'] = $order_revenue_data['avg_order_value_three'];
+				// $data['orders_count_three'] = $order_revenue_data['orders_count_three'];
+				// $data['net_revenue_three'] = $order_revenue_data['net_revenue_three'];
 				
 			}
 		
@@ -409,8 +415,8 @@ if ( !class_exists( 'WC_Trackers' ) ) {
 		 */
 		public function get_order_revenue() {
 			$data = [];
-			$current_date = date('Y-m-d H:i:s');
-			$three_months_ago = date('Y-m-d H:i:s', strtotime('-3 months'));
+			$current_date = gmdate('Y-m-d H:i:s');
+			$three_months_ago = gmdate('Y-m-d H:i:s', strtotime('-3 months'));
 			$args = array(
 				'before'    => $current_date,
 				'after'     => $three_months_ago,
@@ -421,7 +427,7 @@ if ( !class_exists( 'WC_Trackers' ) ) {
 			$data['avg_order_value_three'] = $three_month_data->totals->avg_order_value;
 			$data['orders_count_three'] = $three_month_data->totals->orders_count;
 
-			$twelve_months_ago = date('Y-m-d H:i:s', strtotime('-12 months'));
+			$twelve_months_ago = gmdate('Y-m-d H:i:s', strtotime('-12 months'));
 			$args1 = array(
 				'before'    => $current_date,
 				'after'     => $twelve_months_ago,
