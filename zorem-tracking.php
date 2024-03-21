@@ -423,9 +423,9 @@ if ( !class_exists( 'WC_Trackers' ) ) {
 			);
 			$report_three_month = new \Automattic\WooCommerce\Admin\API\Reports\Orders\Stats\Query( $args );
 			$three_month_data = $report_three_month->get_data();
-			$data['net_revenue_three'] = $three_month_data->totals->net_revenue / 3;
+			$data['net_revenue_three'] = $three_month_data->totals->net_revenue;
 			$data['avg_order_value_three'] = $three_month_data->totals->avg_order_value;
-			$data['orders_count_three'] = $three_month_data->totals->orders_count / 3;
+			$data['orders_count_three'] = $three_month_data->totals->orders_count;
 		
 			$twelve_months_ago = gmdate('Y-m-d H:i:s', strtotime('-12 months'));
 			$args1 = array(
@@ -434,9 +434,9 @@ if ( !class_exists( 'WC_Trackers' ) ) {
 			);
 			$report_twelve_months = new \Automattic\WooCommerce\Admin\API\Reports\Orders\Stats\Query( $args1 );
 			$twelve_month_data = $report_twelve_months->get_data();
-			$data['net_revenue_twelve'] = $twelve_month_data->totals->net_revenue / 12;
+			$data['net_revenue_twelve'] = $twelve_month_data->totals->net_revenue;
 			$data['avg_order_value_twelve'] = $twelve_month_data->totals->avg_order_value;
-			$data['orders_count_twelve'] = $twelve_month_data->totals->orders_count / 12;
+			$data['orders_count_twelve'] = $twelve_month_data->totals->orders_count;
 		
 			return $data;
 		}
