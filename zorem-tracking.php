@@ -94,12 +94,12 @@ if ( !class_exists( 'WC_Trackers' ) ) {
 			
 		}
 		public function load_admin_page() {
-		
+			$is_excluded = $this->excluded_urls();
+			if ( true === $is_excluded ) {
+				return;
+			}
 			if (isset($_GET['page']) && $_GET['page'] === $this->menu_slug) {
-				$is_excluded = $this->excluded_urls();
-				if ($is_excluded) {
-					return;
-				}
+				
 				if (!get_option($this->plugin_slug_with_hyphens . '_usage_data_selector')) {
 					
 					$this->usage_data_signup_box();
@@ -120,7 +120,7 @@ if ( !class_exists( 'WC_Trackers' ) ) {
 			
 			check_ajax_referer( $this->plugin_slug_with_hyphens . '_usage_data_form', $this->plugin_slug_with_hyphens . '_usage_data_form_nonce' );
 			$is_excluded = $this->excluded_urls();
-			if ($is_excluded) {
+			if ( true === $is_excluded ) {
 				return;
 			}
 			if ( isset( $_POST[ $this->plugin_slug_with_hyphens . '_optin_email_notification' ] ) && 0 == $_POST[ $this->plugin_slug_with_hyphens . '_optin_email_notification' ] && isset( $_POST[ 	$this->plugin_slug_with_hyphens . '_enable_usage_data' ] ) && 0 == $_POST[ $this->plugin_slug_with_hyphens . '_enable_usage_data' ] ) {
@@ -180,7 +180,7 @@ if ( !class_exists( 'WC_Trackers' ) ) {
 				return;
 			}
 			$is_excluded = $this->excluded_urls();
-			if ($is_excluded) {
+			if ( true === $is_excluded ) {
 				return;
 			}
 			// Update time first before sending to ensure it is set.
@@ -455,11 +455,11 @@ if ( !class_exists( 'WC_Trackers' ) ) {
 		}
 
 		public function excluded_urls() {
-			$words_to_check = array('staging', 'test', 'demo', 'dev');
+			$words_to_check = array('staging', 'test', 'demo');
 			// Extract URL from data
 			$url = home_url();
-			foreach ($words_to_check as $word) {
-				if (strpos($url, $word) !== false) {
+			foreach ( $words_to_check as $word ) {
+				if ( false !== strpos($url, $word) ) {
 					return true;
 				}
 			}
