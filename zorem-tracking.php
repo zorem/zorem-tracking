@@ -107,11 +107,6 @@ if ( !class_exists( 'WC_Trackers' ) ) {
 		}
 	
 		public function ast_activate_usage_data_fun() {
-			
-			if ( ! current_user_can( 'manage_woocommerce' ) ) {
-				exit( 'You are not allowed' );
-			}
-			
 			check_ajax_referer( $this->plugin_slug_with_hyphens . '_usage_data_form', $this->plugin_slug_with_hyphens . '_usage_data_form_nonce' );
 		
 			if ( isset( $_POST[ $this->plugin_slug_with_hyphens . '_optin_email_notification' ] ) && 0 == $_POST[ $this->plugin_slug_with_hyphens . '_optin_email_notification' ] && isset( $_POST[ 	$this->plugin_slug_with_hyphens . '_enable_usage_data' ] ) && 0 == $_POST[ $this->plugin_slug_with_hyphens . '_enable_usage_data' ] ) {
@@ -133,11 +128,6 @@ if ( !class_exists( 'WC_Trackers' ) ) {
 		}
 	
 		public function ast_skip_usage_data_fun() {
-		
-			if ( ! current_user_can( 'manage_woocommerce' ) ) {
-				exit( 'You are not allowed' );
-			}
-		
 			check_ajax_referer( $this->plugin_slug_with_hyphens . '_usage_skip_form', $this->plugin_slug_with_hyphens . '_usage_skip_form_nonce' );
 		
 			update_option( $this->plugin_slug_with_hyphens . '_usage_data_selector', true );
