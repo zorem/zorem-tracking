@@ -450,36 +450,28 @@ if ( !class_exists( 'WC_Trackers' ) ) {
 			return $data;
 		}
 
-	/**
-	 * Send a one-time opt-in confirmation email to the site admin.
-	 */
-	private function send_optin_confirmation_email() {
-		$response = wp_safe_remote_post(
-			'https://tracking.zorem.com/wp-json/zorem-usage/v1/send-optin-email',
-			array(
-				'method'   => 'POST',
-				'timeout'  => 15,
-				'blocking' => true,
-				'headers'  => array(
-					'Content-Type' => 'application/json',
-					'User-Agent'   => 'zoremTracker/' . md5( esc_url_raw( home_url( '/' ) ) ) . ';',
-				),
-				'body' => wp_json_encode( array(
-					'to'              => get_option( 'admin_email' ),
-					'plugin_name'     => $this->plugin_name,
-					'site_url'        => home_url(),
-					'logo_url'        => plugin_dir_url( __FILE__ ) . 'assets/images/logo-v1.png',
-				) ),
-			)
-		);
-		$logger = wc_get_logger();
-		if ( is_wp_error( $response ) ) {
-			$logger->error( 'Optin email API error: ' . $response->get_error_message(), array( 'source' => 'zorem-tracking' ) );
-		} else {
-			$code = wp_remote_retrieve_response_code( $response );
-			$body = wp_remote_retrieve_body( $response );
-			$logger->info( 'Optin email API response: ' . $code . ' | ' . $body, array( 'source' => 'zorem-tracking' ) );
+		/**
+		 * Send a one-time opt-in confirmation email to the site admin.
+		 */
+		private function send_optin_confirmation_email() {
+			$response = wp_safe_remote_post(
+				'https://tracking.zorem.com/wp-json/zorem-usage/v1/send-optin-email',
+				array(
+					'method'   => 'POST',
+					'timeout'  => 15,
+					'blocking' => true,
+					'headers'  => array(
+						'Content-Type' => 'application/json',
+						'User-Agent'   => 'zoremTracker/' . md5( esc_url_raw( home_url( '/' ) ) ) . ';',
+					),
+					'body' => wp_json_encode( array(
+						'to'              => get_option( 'admin_email' ),
+						'plugin_name'     => $this->plugin_name,
+						'site_url'        => home_url(),
+						'logo_url'        => plugin_dir_url( __FILE__ ) . 'assets/images/logo-v1.png',
+					) ),
+				)
+			);
 		}
-	}
 	}
 }
