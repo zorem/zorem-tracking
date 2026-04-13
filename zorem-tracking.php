@@ -84,7 +84,7 @@ if ( !class_exists( 'WC_Trackers' ) ) {
 		public function enqueue_plugin_styles() {
 			// Enqueue your CSS file
 			wp_enqueue_style('plugin-css', plugin_dir_url(__FILE__) . 'assets/css/style.css', array(), time());
-			wp_enqueue_script('plugin-js', plugin_dir_url(__FILE__) . 'assets/js/main.js', array(), time());
+			wp_enqueue_script('plugin-js', plugin_dir_url(__FILE__) . 'assets/js/main.js', array( 'jquery', 'jquery-blockui' ), time());
 			 
 			wp_localize_script('plugin-js', 'zorem_tracking_data', [
 				'plugin_slug_with_hyphens' => $this->plugin_slug_with_hyphens,
@@ -139,16 +139,20 @@ if ( !class_exists( 'WC_Trackers' ) ) {
 				$this->send_optin_confirmation_email();
 				update_option( $this->plugin_slug_with_hyphens . '_optin_confirmation_sent', true );
 			}
+
+			wp_die();
 		}
 	
 		public function ast_skip_usage_data_fun() {
 			check_ajax_referer( $this->plugin_slug_with_hyphens . '_usage_skip_form', $this->plugin_slug_with_hyphens . '_usage_skip_form_nonce' );
-		
+
 			update_option( $this->plugin_slug_with_hyphens . '_usage_data_selector', true );
 			update_option( $this->plugin_slug_with_hyphens . '_optin_email_notification', 0 );
 			update_option( $this->plugin_slug_with_hyphens . '_enable_usage_data', 0 );
-		
+
 			$this->set_unset_usage_data_cron();
+
+			wp_die();
 		}
 	
 		public function set_unset_usage_data_cron() {

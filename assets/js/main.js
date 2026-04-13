@@ -10,53 +10,69 @@ jQuery( ".ud-checkbox li" ).on("click", function (e) {
 	}
 });
 
-jQuery(document).on("click", ".submit_usage_data", function(e){	
-	
+jQuery(document).on("click", ".submit_usage_data", function(e){
+	e.preventDefault();
+
 	var form = jQuery('#usage_data_form');
-	jQuery(".ud-box-container").block({
-		message: null,
-		overlayCSS: {
-			background: "#fff",
-			opacity: .6
-		}	
-    });
+	if ( jQuery.fn.block ) {
+		jQuery(".ud-box-container").block({
+			message: null,
+			overlayCSS: {
+				background: "#fff",
+				opacity: .6
+			}
+		});
+	}
 
 	jQuery.ajax({
-		url: ajaxurl,		
-		data: form.serialize(),		
-		type: 'POST',		
-		success: function(response) {	
-			jQuery(".ud-box-container").unblock();	
+		url: ajaxurl,
+		data: form.serialize(),
+		type: 'POST',
+		success: function(response) {
+			if ( jQuery.fn.unblock ) {
+				jQuery(".ud-box-container").unblock();
+			}
 			location.reload(true);
 		},
 		error: function(response) {
-			console.log(response);			
+			if ( jQuery.fn.unblock ) {
+				jQuery(".ud-box-container").unblock();
+			}
+			console.log(response);
 		}
 	});
 	return false;
 });
 
-jQuery(document).on("click", ".skip_usage_data", function(e){	
-	
+jQuery(document).on("click", ".skip_usage_data", function(e){
+	e.preventDefault();
+
 	var form = jQuery('#skip_usage_data_form');
-	jQuery(".ud-box-container").block({
-		message: null,
-		overlayCSS: {
-			background: "#fff",
-			opacity: .6
-		}	
-    });
-	
+	if ( jQuery.fn.block ) {
+		jQuery(".ud-box-container").block({
+			message: null,
+			overlayCSS: {
+				background: "#fff",
+				opacity: .6
+			}
+		});
+	}
+
 	jQuery.ajax({
-		url: ajaxurl,		
-		data: form.serialize(),		
-		type: 'POST',		
-		success: function(response) {	
-			jQuery(".ud-box-container").unblock();
+		url: ajaxurl,
+		data: form.serialize(),
+		type: 'POST',
+		success: function(response) {
+			if ( jQuery.fn.unblock ) {
+				jQuery(".ud-box-container").unblock();
+			}
 			location.reload(true);
 		},
 		error: function(response) {
-			console.log(response);			
+			if ( jQuery.fn.unblock ) {
+				jQuery(".ud-box-container").unblock();
+			}
+			console.log(response);
 		}
 	});
 	return false;
